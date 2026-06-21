@@ -1,0 +1,311 @@
+version: '3.8'
+
+services:
+
+  # ─── BASE DE DATOS MYSQL ────────────────────────────────────────────────────
+  mysql:
+    image: mysql:8.0
+    container_name: constructapp-mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root1234
+      MYSQL_USER: constructapp
+      MYSQL_PASSWORD: constructapp1234
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+    networks:
+      - constructapp-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot1234"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  # ─── MS AUTH ────────────────────────────────────────────────────────────────
+  ms-auth:
+    build:
+      context: ./ms-auth
+      dockerfile: Dockerfile
+    container_name: ms-auth
+    restart: on-failure
+    ports:
+      - "8091:8091"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/db_ms_auth?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root1234
+      SERVER_PORT: 8091
+      JWT_SECRET: constructapp-secret-key-2025-muy-larga-para-seguridad
+      JWT_EXPIRATION: 86400000
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - constructapp-network
+
+  # ─── MS CATALOGO ────────────────────────────────────────────────────────────
+  ms-catalogo:
+    build:
+      context: ./ms-catalogo
+      dockerfile: Dockerfile
+    container_name: ms-catalogo
+    restart: on-failure
+    ports:
+      - "8081:8081"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/db_ms_catalogo?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root1234
+      SERVER_PORT: 8081
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - constructapp-network
+
+  # ─── MS CLIENTE ─────────────────────────────────────────────────────────────
+  ms-cliente:
+    build:
+      context: ./ms-cliente/ms-cliente
+      dockerfile: Dockerfile
+    container_name: ms-cliente
+    restart: on-failure
+    ports:
+      - "8082:8082"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/db_ms_cliente?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root1234
+      SERVER_PORT: 8082
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - constructapp-network
+
+  # ─── MS PROVEEDOR MATERIAL ──────────────────────────────────────────────────
+  ms-proveedor-material:
+    build:
+      context: ./ms-proveedor-material/ms-proveedor-material
+      dockerfile: Dockerfile
+    container_name: ms-proveedor-material
+    restart: on-failure
+    ports:
+      - "8083:8083"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/db_ms_proveedor_material?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root1234
+      SERVER_PORT: 8083
+      MS_CATALOGO_URL: http://ms-catalogo:8081
+    depends_on:
+      mysql:
+        condition: service_healthy
+      ms-catalogo:
+        condition: service_started
+    networks:
+      - constructapp-network
+
+  # ─── MS PROVEEDOR SERVICIO ──────────────────────────────────────────────────
+  ms-proveedor-servicio:
+    build:
+      context: ./ms-proveedor-servicio/ms-proveedor-servicio
+      dockerfile: Dockerfile
+    container_name: ms-proveedor-servicio
+    restart: on-failure
+    ports:
+      - "8084:8084"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/db_ms_proveedor_servicio?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root1234
+      SERVER_PORT: 8084
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - constructapp-network
+
+  # ─── MS RESENA ──────────────────────────────────────────────────────────────
+  ms-resena:
+    build:
+      context: ./ms-resena
+      dockerfile: Dockerfile
+    container_name: ms-resena
+    restart: on-failure
+    ports:
+      - "8085:8085"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/db_ms_resena?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root1234
+      SERVER_PORT: 8085
+      MS_CLIENTE_URL: http://ms-cliente:8082
+      MS_PROVEEDOR_SERVICIO_URL: http://ms-proveedor-servicio:8084
+    depends_on:
+      mysql:
+        condition: service_healthy
+      ms-cliente:
+        condition: service_started
+      ms-proveedor-servicio:
+        condition: service_started
+    networks:
+      - constructapp-network
+
+  # ─── MS PROYECTO ────────────────────────────────────────────────────────────
+  ms-proyecto:
+    build:
+      context: ./ms-proyecto/ms-proyecto
+      dockerfile: Dockerfile
+    container_name: ms-proyecto
+    restart: on-failure
+    ports:
+      - "8086:8086"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/db_ms_proyecto?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root1234
+      SERVER_PORT: 8086
+      MS_CLIENTE_URL: http://ms-cliente:8082
+    depends_on:
+      mysql:
+        condition: service_healthy
+      ms-cliente:
+        condition: service_started
+    networks:
+      - constructapp-network
+
+  # ─── MS CALCULO MATERIAL ────────────────────────────────────────────────────
+  ms-calculo-material:
+    build:
+      context: ./ms-calculo-material
+      dockerfile: Dockerfile
+    container_name: ms-calculo-material
+    restart: on-failure
+    ports:
+      - "8087:8087"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/db_ms_calculo_material?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root1234
+      SERVER_PORT: 8087
+      MS_CATALOGO_URL: http://ms-catalogo:8081
+    depends_on:
+      mysql:
+        condition: service_healthy
+      ms-catalogo:
+        condition: service_started
+    networks:
+      - constructapp-network
+
+  # ─── MS COTIZACION ──────────────────────────────────────────────────────────
+  ms-cotizacion:
+    build:
+      context: ./ms-cotizacion
+      dockerfile: Dockerfile
+    container_name: ms-cotizacion
+    restart: on-failure
+    ports:
+      - "8088:8088"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/db_ms_cotizacion?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root1234
+      SERVER_PORT: 8088
+      MS_CLIENTE_URL: http://ms-cliente:8082
+      MS_PROVEEDOR_MATERIAL_URL: http://ms-proveedor-material:8083
+      MS_PROVEEDOR_SERVICIO_URL: http://ms-proveedor-servicio:8084
+    depends_on:
+      mysql:
+        condition: service_healthy
+      ms-cliente:
+        condition: service_started
+    networks:
+      - constructapp-network
+
+  # ─── MS COMPARACION PRECIOS ─────────────────────────────────────────────────
+  ms-comparacion-precios:
+    build:
+      context: ./ms-comparacion-precios
+      dockerfile: Dockerfile
+    container_name: ms-comparacion-precios
+    restart: on-failure
+    ports:
+      - "8089:8089"
+    environment:
+      SERVER_PORT: 8089
+      MS_PROVEEDOR_MATERIAL_URL: http://ms-proveedor-material:8083
+    depends_on:
+      ms-proveedor-material:
+        condition: service_started
+    networks:
+      - constructapp-network
+
+  # ─── MS ORDEN TRABAJO ───────────────────────────────────────────────────────
+  ms-orden-trabajo:
+    build:
+      context: ./ms-orden-trabajo
+      dockerfile: Dockerfile
+    container_name: ms-orden-trabajo
+    restart: on-failure
+    ports:
+      - "8090:8090"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/db_ms_orden_trabajo?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root1234
+      SERVER_PORT: 8090
+      MS_COTIZACION_URL: http://ms-cotizacion:8088
+    depends_on:
+      mysql:
+        condition: service_healthy
+      ms-cotizacion:
+        condition: service_started
+    networks:
+      - constructapp-network
+
+  # ─── MS GATEWAY ─────────────────────────────────────────────────────────────
+  ms-gateway:
+    build:
+      context: ./ms-gateway
+      dockerfile: Dockerfile
+    container_name: ms-gateway
+    restart: on-failure
+    ports:
+      - "8080:8080"
+    environment:
+      SERVER_PORT: 8080
+      JWT_SECRET: constructapp-secret-key-2025-muy-larga-para-seguridad
+      MS_AUTH_URL: http://ms-auth:8091
+      MS_CATALOGO_URL: http://ms-catalogo:8081
+      MS_CLIENTE_URL: http://ms-cliente:8082
+      MS_PROVEEDOR_MATERIAL_URL: http://ms-proveedor-material:8083
+      MS_PROVEEDOR_SERVICIO_URL: http://ms-proveedor-servicio:8084
+      MS_RESENA_URL: http://ms-resena:8085
+      MS_PROYECTO_URL: http://ms-proyecto:8086
+      MS_CALCULO_MATERIAL_URL: http://ms-calculo-material:8087
+      MS_COTIZACION_URL: http://ms-cotizacion:8088
+      MS_COMPARACION_PRECIOS_URL: http://ms-comparacion-precios:8089
+      MS_ORDEN_TRABAJO_URL: http://ms-orden-trabajo:8090
+    depends_on:
+      ms-auth:
+        condition: service_started
+      ms-catalogo:
+        condition: service_started
+      ms-cliente:
+        condition: service_started
+      ms-cotizacion:
+        condition: service_started
+    networks:
+      - constructapp-network
+
+# ─── VOLÚMENES Y REDES ────────────────────────────────────────────────────────
+volumes:
+  mysql_data:
+
+networks:
+  constructapp-network:
+    driver: bridge

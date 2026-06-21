@@ -1,0 +1,10 @@
+CREATE DATABASE IF NOT EXISTS db_ms_auth;
+CREATE DATABASE IF NOT EXISTS db_ms_catalogo;
+CREATE DATABASE IF NOT EXISTS db_ms_cliente;
+CREATE DATABASE IF NOT EXISTS db_ms_proveedor_material;
+CREATE DATABASE IF NOT EXISTS db_ms_proveedor_servicio;
+CREATE DATABASE IF NOT EXISTS db_ms_resena;
+CREATE DATABASE IF NOT EXISTS db_ms_proyecto;
+CREATE DATABASE IF NOT EXISTS db_ms_calculo_material;
+CREATE DATABASE IF NOT EXISTS db_ms_cotizacion;
+CREATE DATABASE IF NOT EXISTS db_ms_orden_trabajo;
