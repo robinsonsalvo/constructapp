@@ -180,7 +180,7 @@ POST http://localhost:8080/api/auth/login
 {
   "username": "admin",
   "password": "admin123",
-  "rol" : ["EL rol elegido"]
+  "rol" : "EL rol elegido"
 }
 ```
 
