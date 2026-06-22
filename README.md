@@ -22,6 +22,31 @@ constructapp-main/
 └── ms-orden-trabajo        # Puerto 8090 — Órdenes de trabajo
 ```
 
+## Rutas del API Gateway
+
+Todas las peticiones del cliente deben dirigirse al Gateway en `http://localhost:8080` — no directamente al puerto de cada microservicio. El Gateway enruta automáticamente según el prefijo de la URL:
+
+| Ruta (prefijo) | Microservicio destino | Requiere JWT |
+|---|---|---|
+| `/api/auth/**` | ms-auth | No |
+| `/api/categorias/**`, `/api/materiales/**` | ms-catalogo | Sí |
+| `/api/clientes/**` | ms-cliente | Sí |
+| `/api/proveedores-material/**` | ms-proveedor-material | Sí |
+| `/api/proveedores-servicio/**` | ms-proveedor-servicio | Sí |
+| `/api/resenas/**` | ms-resena | Sí |
+| `/api/proyectos/**` | ms-proyecto | Sí |
+| `/api/calculos-material/**` | ms-calculo-material | Sí |
+| `/api/cotizaciones/**` | ms-cotizacion | Sí |
+| `/api/comparacion-precios/**` | ms-comparacion-precios | Sí |
+| `/api/ordenes-trabajo/**` | ms-orden-trabajo | Sí |
+
+Ejemplo de uso:
+
+```bash
+GET http://localhost:8080/api/categorias
+Authorization: Bearer {token}
+```
+
 ## Tecnologías
 
 - **Java 21** + **Spring Boot 3.5**
@@ -151,7 +176,7 @@ Authorization: Bearer {token}
 Para obtener un token:
 
 ```bash
-POST http://localhost:8091/api/auth/login
+POST http://localhost:8080/api/auth/login
 {
   "username": "admin",
   "password": "admin123"
