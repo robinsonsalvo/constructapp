@@ -2,7 +2,6 @@
 
 Sistema de microservicios desarrollado con **Spring Boot 3 / Java 21** para la gestión integral de proyectos de construcción.
 
-<<<<<<< HEAD
 ## Arquitectura
 
 El sistema está compuesto por **12 microservicios** independientes que se comunican entre sí mediante REST (WebClient), protegidos por un API Gateway con autenticación JWT.
