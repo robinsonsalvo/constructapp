@@ -7,6 +7,25 @@ spring:
 server:
   port: ${SERVER_PORT:8082}
 
+<<<<<<< HEAD
+=======
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_SERVER:http://localhost:8761/eureka}
+  instance:
+    prefer-ip-address: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
+
+>>>>>>> 16dc53c (fix de eureka, pruebas unitarias y swagger auth)
 springdoc:
   swagger-ui:
     path: /swagger-ui.html
@@ -48,4 +67,8 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
+<<<<<<< HEAD
     open-in-view: false
+=======
+    open-in-view: false
+>>>>>>> 16dc53c (fix de eureka, pruebas unitarias y swagger auth)

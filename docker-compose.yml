@@ -24,6 +24,21 @@ services:
       timeout: 5s
       retries: 10
 
+<<<<<<< HEAD
+=======
+  # ─── MS EUREKA SERVER ───────────────────────────────────────────────────────
+  ms-eureka-server:
+    build:
+      context: ./ms-eureka-server
+      dockerfile: Dockerfile
+    container_name: ms-eureka-server
+    restart: on-failure
+    ports:
+      - "8761:8761"
+    networks:
+      - constructapp-network
+
+>>>>>>> 16dc53c (fix de eureka, pruebas unitarias y swagger auth)
   # ─── MS AUTH ────────────────────────────────────────────────────────────────
   ms-auth:
     build:
@@ -34,12 +49,20 @@ services:
     ports:
       - "8091:8091"
     environment:
+<<<<<<< HEAD
+=======
+      SPRING_PROFILES_ACTIVE: prod
+>>>>>>> 16dc53c (fix de eureka, pruebas unitarias y swagger auth)
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/db_ms_auth?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: root1234
       SERVER_PORT: 8091
       JWT_SECRET: constructapp-secret-key-2025-muy-larga-para-seguridad
       JWT_EXPIRATION: 86400000
+<<<<<<< HEAD
+=======
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://ms-eureka-server:8761/eureka/
+>>>>>>> 16dc53c (fix de eureka, pruebas unitarias y swagger auth)
     depends_on:
       mysql:
         condition: service_healthy
@@ -56,10 +79,18 @@ services:
     ports:
       - "8081:8081"
     environment:
+<<<<<<< HEAD
+=======
+      SPRING_PROFILES_ACTIVE: prod
+>>>>>>> 16dc53c (fix de eureka, pruebas unitarias y swagger auth)
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/db_ms_catalogo?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: root1234
       SERVER_PORT: 8081
+<<<<<<< HEAD
+=======
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://ms-eureka-server:8761/eureka/
+>>>>>>> 16dc53c (fix de eureka, pruebas unitarias y swagger auth)
     depends_on:
       mysql:
         condition: service_healthy
@@ -76,10 +107,19 @@ services:
     ports:
       - "8082:8082"
     environment:
+<<<<<<< HEAD
+=======
+      SPRING_PROFILES_ACTIVE: prod
+>>>>>>> 16dc53c (fix de eureka, pruebas unitarias y swagger auth)
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/db_ms_cliente?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: root1234
       SERVER_PORT: 8082
+<<<<<<< HEAD
+=======
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://ms-eureka-server:8761/eureka/
+      EUREKA_SERVER: http://ms-eureka-server:8761/eureka
+>>>>>>> 16dc53c (fix de eureka, pruebas unitarias y swagger auth)
     depends_on:
       mysql:
         condition: service_healthy
@@ -96,11 +136,19 @@ services:
     ports:
       - "8083:8083"
     environment:
+<<<<<<< HEAD
+=======
+      SPRING_PROFILES_ACTIVE: prod
+>>>>>>> 16dc53c (fix de eureka, pruebas unitarias y swagger auth)
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/db_ms_proveedor_material?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: root1234
       SERVER_PORT: 8083
       MS_CATALOGO_URL: http://ms-catalogo:8081
+<<<<<<< HEAD
+=======
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://ms-eureka-server:8761/eureka/
+>>>>>>> 16dc53c (fix de eureka, pruebas unitarias y swagger auth)
     depends_on:
       mysql:
         condition: service_healthy
@@ -119,10 +167,18 @@ services:
     ports:
       - "8084:8084"
     environment:
+<<<<<<< HEAD
+=======
+      SPRING_PROFILES_ACTIVE: prod
+>>>>>>> 16dc53c (fix de eureka, pruebas unitarias y swagger auth)
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/db_ms_proveedor_servicio?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: root1234
       SERVER_PORT: 8084
+<<<<<<< HEAD
+=======
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://ms-eureka-server:8761/eureka/
+>>>>>>> 16dc53c (fix de eureka, pruebas unitarias y swagger auth)
     depends_on:
       mysql:
         condition: service_healthy
@@ -139,12 +195,20 @@ services:
     ports:
       - "8085:8085"
     environment:
+<<<<<<< HEAD
+=======
+      SPRING_PROFILES_ACTIVE: prod
+>>>>>>> 16dc53c (fix de eureka, pruebas unitarias y swagger auth)
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/db_ms_resena?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: root1234
       SERVER_PORT: 8085
       MS_CLIENTE_URL: http://ms-cliente:8082
       MS_PROVEEDOR_SERVICIO_URL: http://ms-proveedor-servicio:8084
+<<<<<<< HEAD
+=======
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://ms-eureka-server:8761/eureka/
+>>>>>>> 16dc53c (fix de eureka, pruebas unitarias y swagger auth)
     depends_on:
       mysql:
         condition: service_healthy
@@ -165,11 +229,19 @@ services:
     ports:
       - "8086:8086"
     environment:
+<<<<<<< HEAD
+=======
+      SPRING_PROFILES_ACTIVE: prod
+>>>>>>> 16dc53c (fix de eureka, pruebas unitarias y swagger auth)
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/db_ms_proyecto?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: root1234
       SERVER_PORT: 8086
       MS_CLIENTE_URL: http://ms-cliente:8082
+<<<<<<< HEAD
+=======
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://ms-eureka-server:8761/eureka/
+>>>>>>> 16dc53c (fix de eureka, pruebas unitarias y swagger auth)
     depends_on:
       mysql:
         condition: service_healthy
@@ -188,11 +260,19 @@ services:
     ports:
       - "8087:8087"
     environment:
+<<<<<<< HEAD
+=======
+      SPRING_PROFILES_ACTIVE: prod
+>>>>>>> 16dc53c (fix de eureka, pruebas unitarias y swagger auth)
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/db_ms_calculo_material?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: root1234
       SERVER_PORT: 8087
       MS_CATALOGO_URL: http://ms-catalogo:8081
+<<<<<<< HEAD
+=======
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://ms-eureka-server:8761/eureka/
+>>>>>>> 16dc53c (fix de eureka, pruebas unitarias y swagger auth)
     depends_on:
       mysql:
         condition: service_healthy
@@ -211,6 +291,10 @@ services:
     ports:
       - "8088:8088"
     environment:
+<<<<<<< HEAD
+=======
+      SPRING_PROFILES_ACTIVE: prod
+>>>>>>> 16dc53c (fix de eureka, pruebas unitarias y swagger auth)
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/db_ms_cotizacion?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: root1234
@@ -218,6 +302,11 @@ services:
       MS_CLIENTE_URL: http://ms-cliente:8082
       MS_PROVEEDOR_MATERIAL_URL: http://ms-proveedor-material:8083
       MS_PROVEEDOR_SERVICIO_URL: http://ms-proveedor-servicio:8084
+<<<<<<< HEAD
+=======
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://ms-eureka-server:8761/eureka/
+      EUREKA_SERVER_URL: http://ms-eureka-server:8761/eureka/
+>>>>>>> 16dc53c (fix de eureka, pruebas unitarias y swagger auth)
     depends_on:
       mysql:
         condition: service_healthy
@@ -236,8 +325,16 @@ services:
     ports:
       - "8089:8089"
     environment:
+<<<<<<< HEAD
       SERVER_PORT: 8089
       MS_PROVEEDOR_MATERIAL_URL: http://ms-proveedor-material:8083
+=======
+      SPRING_PROFILES_ACTIVE: prod
+      SERVER_PORT: 8089
+      MS_PROVEEDOR_MATERIAL_URL: http://ms-proveedor-material:8083
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://ms-eureka-server:8761/eureka/
+      EUREKA_SERVER: http://ms-eureka-server:8761/eureka
+>>>>>>> 16dc53c (fix de eureka, pruebas unitarias y swagger auth)
     depends_on:
       ms-proveedor-material:
         condition: service_started
@@ -254,11 +351,19 @@ services:
     ports:
       - "8090:8090"
     environment:
+<<<<<<< HEAD
+=======
+      SPRING_PROFILES_ACTIVE: prod
+>>>>>>> 16dc53c (fix de eureka, pruebas unitarias y swagger auth)
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/db_ms_orden_trabajo?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: root1234
       SERVER_PORT: 8090
       MS_COTIZACION_URL: http://ms-cotizacion:8088
+<<<<<<< HEAD
+=======
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://ms-eureka-server:8761/eureka/
+>>>>>>> 16dc53c (fix de eureka, pruebas unitarias y swagger auth)
     depends_on:
       mysql:
         condition: service_healthy
@@ -278,6 +383,11 @@ services:
       - "8080:8080"
     environment:
       SERVER_PORT: 8080
+<<<<<<< HEAD
+=======
+      SPRING_PROFILES_ACTIVE: prod
+      SPRING_CLOUD_COMPATIBILITY_VERIFIER_ENABLED: "false"
+>>>>>>> 16dc53c (fix de eureka, pruebas unitarias y swagger auth)
       JWT_SECRET: constructapp-secret-key-2025-muy-larga-para-seguridad
       MS_AUTH_URL: http://ms-auth:8091
       MS_CATALOGO_URL: http://ms-catalogo:8081

@@ -13,6 +13,16 @@ springdoc:
   api-docs:
     path: /v3/api-docs
 
+<<<<<<< HEAD
+=======
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE:http://localhost:8761/eureka}
+  instance:
+    prefer-ip-address: true
+
+>>>>>>> 16dc53c (fix de eureka, pruebas unitarias y swagger auth)
 ---
 spring:
   config:
@@ -48,4 +58,8 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
+<<<<<<< HEAD
     open-in-view: false
+=======
+    open-in-view: false
+>>>>>>> 16dc53c (fix de eureka, pruebas unitarias y swagger auth)
