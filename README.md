@@ -372,7 +372,7 @@ El reporte HTML queda en `target/site/jacoco/index.html`. Repite esto en cada un
 - Corregida la inicialización de bases de datos para evitar el error `Found non-empty schema but no schema history table`.
 - Agregada prueba unitaria `GatewayExceptionHandlerTest` en `ms-gateway`.
 - Corregido `.gitignore` para excluir `target/`, `.idea/`, `.vscode/` y otros archivos generados.
-
+* Corregida ruta faltante en `ms-gateway`: los endpoints de `PrecioProveedorController` (`/api/precios-proveedor/**`) no estaban registrados en las rutas del gateway y devolvían 404 aunque el microservicio `ms-proveedor-material` los exponía correctamente.
 ---
 
 **ConstructApp** — Proyecto académico DUOC UC — DSY1103 Desarrollo FullStack 1
