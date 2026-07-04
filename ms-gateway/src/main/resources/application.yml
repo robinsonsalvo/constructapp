@@ -45,7 +45,7 @@ spring:
         - id: ms-proveedor-material
           uri: http://localhost:8083
           predicates:
-            - Path=/api/proveedores-material/**
+            - Path=/api/proveedores-material/**, /api/precios-proveedor/**
 
         - id: ms-proveedor-servicio
           uri: http://localhost:8084
@@ -112,7 +112,7 @@ spring:
         - id: ms-proveedor-material
           uri: ${MS_PROVEEDOR_MATERIAL_URL:http://ms-proveedor-material:8083}
           predicates:
-            - Path=/api/proveedores-material/**
+            - Path=/api/proveedores-material/**, /api/precios-proveedor/**
 
         - id: ms-proveedor-servicio
           uri: ${MS_PROVEEDOR_SERVICIO_URL:http://ms-proveedor-servicio:8084}
