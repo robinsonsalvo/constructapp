@@ -133,6 +133,15 @@ Content-Type: application/json
 
 En Swagger: presionar el botón **Authorize** (candado), pegar el token y luego usar "Try it out" en cualquier endpoint.
 
+### Dónde se valida el token
+
+La seguridad JWT existe en **dos capas independientes**, ambas usando el mismo secreto compartido (`jwt.secret` / `JWT_SECRET`):
+
+1. **`ms-gateway`** (puerto 8080): filtro global (`JwtAuthFilter`) que exige token en cualquier ruta `/api/**`, excepto `/api/auth/login` y `/api/auth/register`. Es el punto de entrada único en producción.
+2. **Cada microservicio de negocio** (`ms-catalogo`, `ms-cliente`, `ms-proveedor-material`, `ms-proveedor-servicio`, `ms-resena`, `ms-proyecto`, `ms-calculo-material`, `ms-cotizacion`, `ms-comparacion-precios`, `ms-orden-trabajo`) tiene su **propia** `SecurityConfig` + `JwtAuthFilter` (solo valida, no emite tokens). Esto permite que el botón **Authorize** funcione también al probar el Swagger de cada microservicio por su puerto individual (ej. `localhost:8081/swagger-ui.html`), sin pasar por el Gateway.
+
+`ms-auth` es el único que además **emite** tokens (login/register) y valida credenciales contra la base de datos.
+
 ### Roles disponibles
 
 | Rol | Descripción |
@@ -162,12 +171,41 @@ En Swagger: presionar el botón **Authorize** (candado), pegar el token y luego 
 
 ---
 
+## Manejo de errores y códigos HTTP
+
+Cada microservicio expone un `GlobalExceptionHandler` (`@RestControllerAdvice`) con manejo específico por tipo de excepción:
+
+| Excepción | Código HTTP | Cuándo se lanza |
+|---|---|---|
+| `ResourceNotFoundException` | `404 NOT_FOUND` | La entidad buscada por ID no existe, o un recurso referenciado en otro microservicio no existe (ej. cliente inexistente al crear una cotización) |
+| `InvalidCredentialsException` (solo `ms-auth`) | `401 UNAUTHORIZED` | Username inexistente o contraseña incorrecta en el login |
+| `RuntimeException` (genérica) | `400 BAD_REQUEST` | Violación de una regla de negocio: nombre/email/RUT duplicado, transición de estado inválida, eliminación de una entidad en estado final, etc. |
+| `MethodArgumentNotValidException` | `400 BAD_REQUEST` | Falla una validación `@Valid` de Bean Validation en el DTO |
+| `Exception` (genérica) | `500 INTERNAL_SERVER_ERROR` | Cualquier error no controlado |
+
+Todas las respuestas de error se registran con SLF4J y devuelven un cuerpo JSON consistente `{ "error": "mensaje" }` (o un mapa de errores por campo en el caso de validación).
+
+`ms-gateway` tiene su propio `GatewayExceptionHandler` (`ErrorWebExceptionHandler`), que además traduce fallas de conexión hacia los microservicios en `503 SERVICE_UNAVAILABLE`.
+
+---
+
 ## Instrucciones de ejecución local (sin Docker)
 
 ### Requisitos previos
 - Java 21+
 - Maven 3.8+
-- MySQL 8.0 corriendo en localhost:3306
+- MySQL 8.0 corriendo en localhost (puerto 3306 por defecto)
+
+> **¿Usas Laragon, XAMPP u otra herramienta con MySQL en un puerto distinto a 3306?**
+> El puerto de conexión es configurable mediante la variable de entorno `DB_PORT`, sin tocar código. Ejemplo para Laragon (puerto 3307):
+> ```bash
+> # Windows PowerShell
+> $env:DB_PORT="3307"; ./mvnw spring-boot:run
+>
+> # Linux / macOS
+> DB_PORT=3307 ./mvnw spring-boot:run
+> ```
+> Si no se define `DB_PORT`, se usa 3306 por defecto. Esto no afecta la ejecución con Docker, que usa su propio contenedor MySQL interno en el puerto 3306 de la red de Docker.
 
 ### 1. Crear las bases de datos
 
@@ -244,6 +282,45 @@ Ejecutar en cada microservicio:
 ```
 
 Las pruebas cubren la lógica de negocio de cada servicio usando **JUnit 5 + Mockito**, con estructura **Given-When-Then** y mocks de repositorios y dependencias externas. Cobertura mínima del 80% sobre funciones y reglas de negocio clave.
+
+`ms-gateway` no tiene lógica de negocio propia (enrutamiento declarativo + filtro JWT), pero sí incluye pruebas unitarias sobre su única pieza de lógica custom: `GatewayExceptionHandlerTest`, que valida la traducción de errores (404, 503, 500) a la respuesta JSON del gateway. `ms-eureka-server` no requiere pruebas de negocio adicionales: es un componente estándar de Spring Cloud Netflix sin código propio más allá de la configuración.
+
+### Reporte de cobertura (JaCoCo)
+
+Para obtener el % de cobertura real y demostrable de cada microservicio:
+
+```bash
+./mvnw test jacoco:report
+```
+
+El reporte HTML queda en `target/site/jacoco/index.html` — ábrelo en el navegador para ver el porcentaje exacto por clase/paquete. Repite esto en cada uno de los 12 microservicios con lógica propia antes de la defensa.
+
+---
+
+## Migraciones de base de datos (Flyway)
+
+Los 10 microservicios con persistencia (`ms-auth`, `ms-catalogo`, `ms-cliente`, `ms-proveedor-material`, `ms-proveedor-servicio`, `ms-resena`, `ms-proyecto`, `ms-calculo-material`, `ms-cotizacion`, `ms-orden-trabajo`) usan **Flyway** para crear el esquema inicial, en vez de depender de `ddl-auto` de Hibernate:
+
+- El script `V1__init.sql` de cada microservicio está en `src/main/resources/db/migration/` y contiene el `CREATE TABLE` exacto de sus entidades (incluyendo FKs, `UNIQUE` y `NOT NULL`).
+- `ddl-auto` cambió de `update` a `validate`: Hibernate ya no crea/modifica tablas, solo valida que el esquema coincida con las entidades JPA. Si detecta un desface, la app no arranca (esto es intencional: fuerza a que cualquier cambio de modelo se refleje también en una nueva migración `V2__...sql`, no en un auto-ajuste silencioso).
+- Flyway corre automáticamente al iniciar cada microservicio (no requiere comando manual).
+
+**⚠️ Importante si ya tenías las bases de datos creadas con la versión anterior (con `ddl-auto: update`):** Flyway va a fallar con `Table 'xxx' already exists` porque intentará crear tablas que ya existen. Antes de correr esta versión, borra y recrea las 10 bases de datos correspondientes:
+
+```sql
+DROP DATABASE IF EXISTS db_ms_auth; CREATE DATABASE db_ms_auth;
+DROP DATABASE IF EXISTS db_ms_catalogo; CREATE DATABASE db_ms_catalogo;
+DROP DATABASE IF EXISTS db_ms_cliente; CREATE DATABASE db_ms_cliente;
+DROP DATABASE IF EXISTS db_ms_proveedor_material; CREATE DATABASE db_ms_proveedor_material;
+DROP DATABASE IF EXISTS db_ms_proveedor_servicio; CREATE DATABASE db_ms_proveedor_servicio;
+DROP DATABASE IF EXISTS db_ms_resena; CREATE DATABASE db_ms_resena;
+DROP DATABASE IF EXISTS db_ms_proyecto; CREATE DATABASE db_ms_proyecto;
+DROP DATABASE IF EXISTS db_ms_calculo_material; CREATE DATABASE db_ms_calculo_material;
+DROP DATABASE IF EXISTS db_ms_cotizacion; CREATE DATABASE db_ms_cotizacion;
+DROP DATABASE IF EXISTS db_ms_orden_trabajo; CREATE DATABASE db_ms_orden_trabajo;
+```
+
+(Esto borra los datos de prueba que tengas cargados — no afecta `ms-comparacion-precios`, que no tiene base de datos propia).
 
 ---
 

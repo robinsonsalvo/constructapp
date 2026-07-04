@@ -28,8 +28,11 @@ public class AuthController {
 
     private final AuthService authService;
 
-    @Operation(summary = "Listar usuarios registrados")
-    @ApiResponse(responseCode = "200", description = "Lista obtenida correctamente")
+    @Operation(summary = "Listar usuarios registrados", description = "Requiere token JWT válido en el header Authorization")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Lista obtenida correctamente"),
+        @ApiResponse(responseCode = "401", description = "Token no proporcionado o inválido")
+    })
     @GetMapping("/listar")
     public ResponseEntity<List<Usuario>> listarTodos() {
         log.info("GET /api/auth/listar");
@@ -65,7 +68,7 @@ public class AuthController {
     })
     @GetMapping("/validate")
     public ResponseEntity<Map<String, Object>> validarToken(
-            @RequestHeader("Authorization") String authHeader) {
+            @RequestHeader(value = "Authorization", required = false) String authHeader) {
         log.info("GET /api/auth/validate");
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)

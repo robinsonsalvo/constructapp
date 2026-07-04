@@ -1,5 +1,7 @@
 package com.constructapp.ms_catalogo.service;
 
+import com.constructapp.ms_catalogo.exception.ResourceNotFoundException;
+
 import com.constructapp.ms_catalogo.dto.CategoriaDTO;
 import com.constructapp.ms_catalogo.model.Categoria;
 import com.constructapp.ms_catalogo.repository.CategoriaRepository;
@@ -26,7 +28,7 @@ public class CategoriaService {
     public CategoriaDTO obtenerPorId(Long id) {
         log.info("Buscando categoria con id: {}", id);
         Categoria categoria = categoriaRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Categoria no encontrada con id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Categoria no encontrada con id: " + id));
         return convertirADTO(categoria);
     }
 
@@ -44,7 +46,7 @@ public class CategoriaService {
     public CategoriaDTO actualizar(Long id, CategoriaDTO dto) {
         log.info("Actualizando categoria con id: {}", id);
         Categoria categoria = categoriaRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Categoria no encontrada con id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Categoria no encontrada con id: " + id));
         categoria.setNombre(dto.getNombre());
         categoria.setDescripcion(dto.getDescripcion());
         Categoria actualizada = categoriaRepository.save(categoria);
@@ -55,7 +57,7 @@ public class CategoriaService {
     public void eliminar(Long id) {
         log.info("Eliminando categoria con id: {}", id);
         if (!categoriaRepository.existsById(id)) {
-            throw new RuntimeException("Categoria no encontrada con id: " + id);
+            throw new ResourceNotFoundException("Categoria no encontrada con id: " + id);
         }
         categoriaRepository.deleteById(id);
         log.info("Categoria eliminada con id: {}", id);

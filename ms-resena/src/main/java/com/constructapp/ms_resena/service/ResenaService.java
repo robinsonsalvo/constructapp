@@ -1,5 +1,7 @@
 package com.constructapp.ms_resena.service;
 
+import com.constructapp.ms_resena.exception.ResourceNotFoundException;
+
 import com.constructapp.ms_resena.dto.ResenaDTO;
 import com.constructapp.ms_resena.model.Resena;
 import com.constructapp.ms_resena.repository.ResenaRepository;
@@ -52,7 +54,7 @@ public class ResenaService {
     public ResenaDTO obtenerPorId(Long id) {
         log.info("Buscando resena con id: {}", id);
         Resena resena = resenaRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Resena no encontrada con id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Resena no encontrada con id: " + id));
         return convertirADTO(resena);
     }
 
@@ -85,7 +87,7 @@ public class ResenaService {
     public void eliminar(Long id) {
         log.info("Eliminando resena con id: {}", id);
         if (!resenaRepository.existsById(id)) {
-            throw new RuntimeException("Resena no encontrada con id: " + id);
+            throw new ResourceNotFoundException("Resena no encontrada con id: " + id);
         }
         resenaRepository.deleteById(id);
         log.info("Resena eliminada con id: {}", id);
@@ -101,7 +103,7 @@ public class ResenaService {
                     .block();
         } catch (Exception e) {
             log.error("Cliente id: {} no encontrado en ms-cliente", clienteId);
-            throw new RuntimeException("El cliente con id " + clienteId + " no existe");
+            throw new ResourceNotFoundException("El cliente con id " + clienteId + " no existe");
         }
     }
 
@@ -115,7 +117,7 @@ public class ResenaService {
                     .block();
         } catch (Exception e) {
             log.error("Proveedor id: {} no encontrado en ms-proveedor-servicio", proveedorServicioId);
-            throw new RuntimeException("El proveedor con id " + proveedorServicioId + " no existe");
+            throw new ResourceNotFoundException("El proveedor con id " + proveedorServicioId + " no existe");
         }
     }
 

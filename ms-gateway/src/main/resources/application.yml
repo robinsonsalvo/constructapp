@@ -3,12 +3,9 @@ spring:
     name: ms-gateway
   profiles:
     active: ${SPRING_PROFILES_ACTIVE:dev}
-<<<<<<< HEAD
-=======
   cloud:
     compatibility-verifier:
       enabled: false
->>>>>>> 16dc53c (fix de eureka, pruebas unitarias y swagger auth)
 
 server:
   port: ${SERVER_PORT:8080}
@@ -16,11 +13,13 @@ server:
 jwt:
   secret: ${JWT_SECRET:constructapp-secret-key-2025-muy-larga-para-seguridad}
 
----
-<<<<<<< HEAD
-=======
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,gateway
 
->>>>>>> 16dc53c (fix de eureka, pruebas unitarias y swagger auth)
+---
 spring:
   config:
     activate:
@@ -83,11 +82,11 @@ spring:
           predicates:
             - Path=/api/ordenes-trabajo/**
 
----
-<<<<<<< HEAD
-=======
+eureka:
+  client:
+    enabled: false
 
->>>>>>> 16dc53c (fix de eureka, pruebas unitarias y swagger auth)
+---
 spring:
   config:
     activate:
@@ -149,3 +148,8 @@ spring:
           uri: ${MS_ORDEN_TRABAJO_URL:http://ms-orden-trabajo:8090}
           predicates:
             - Path=/api/ordenes-trabajo/**
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE:http://ms-eureka-server:8761/eureka/}

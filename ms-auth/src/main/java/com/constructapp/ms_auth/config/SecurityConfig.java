@@ -1,10 +1,8 @@
 package com.constructapp.ms_auth.config;
 
-<<<<<<< HEAD
-=======
 import com.constructapp.ms_auth.security.JwtAuthenticationFilter;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
->>>>>>> 16dc53c (fix de eureka, pruebas unitarias y swagger auth)
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -15,13 +13,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-<<<<<<< HEAD
-
-@Configuration
-@EnableWebSecurity
-public class SecurityConfig {
-
-=======
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
@@ -31,7 +22,6 @@ public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
->>>>>>> 16dc53c (fix de eureka, pruebas unitarias y swagger auth)
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -39,30 +29,31 @@ public class SecurityConfig {
             .sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-<<<<<<< HEAD
-                .requestMatchers(
-                    "/api/auth/**",
-=======
-                // Solo login y register son publicos
-                .requestMatchers("/api/auth/login", "/api/auth/register").permitAll()
+                // Solo login, register y validate son publicos
+                // (validate es publico porque su proposito es evaluar si un token
+                // es valido o no; requiere poder ejecutarse aunque el token
+                // este ausente, vencido o mal formado)
+                .requestMatchers("/api/auth/login", "/api/auth/register", "/api/auth/validate").permitAll()
                 // Swagger siempre publico
                 .requestMatchers(
->>>>>>> 16dc53c (fix de eureka, pruebas unitarias y swagger auth)
                     "/swagger-ui.html",
                     "/swagger-ui/**",
                     "/v3/api-docs/**",
                     "/v3/api-docs"
                 ).permitAll()
-<<<<<<< HEAD
+                // listar requiere token (cualquier endpoint no listado arriba)
                 .anyRequest().authenticated()
-            );
-=======
-                // validate y listar requieren token
-                .anyRequest().authenticated()
+            )
+            .exceptionHandling(exceptions -> exceptions
+                .authenticationEntryPoint((request, response, authException) -> {
+                    response.setContentType("application/json");
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    response.getWriter().write(
+                        "{\"error\": \"Token no proporcionado o inválido\"}");
+                })
             )
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
->>>>>>> 16dc53c (fix de eureka, pruebas unitarias y swagger auth)
         return http.build();
     }
 

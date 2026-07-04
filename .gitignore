@@ -1,41 +1,9 @@
-# Maven
 target/
 *.class
-*.jar
-*.war
-*.ear
-*.zip
-*.tar.gz
-*.rar
-
-# Maven wrapper
-!.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
-!**/src/test/**/target/
-
-# IDE
 .idea/
 *.iml
-*.ipr
-*.iws
 .vscode/
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
-
-# Spring Boot
-application-local.properties
-application-local.yml
-
-# Logs
+.mvn/wrapper/maven-wrapper.jar
 *.log
-logs/
-
-# OS
 .DS_Store
-Thumbs.db
-
-# Docker volumes
-mysql_data/
+reset-y-levantar.ps1

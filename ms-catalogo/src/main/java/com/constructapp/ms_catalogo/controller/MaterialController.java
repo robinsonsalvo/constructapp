@@ -4,6 +4,8 @@ import com.constructapp.ms_catalogo.dto.MaterialDTO;
 import com.constructapp.ms_catalogo.service.MaterialService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -35,8 +37,15 @@ public class MaterialController {
 
     @Operation(summary = "Obtener material por ID")
     @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Material encontrado"),
-        @ApiResponse(responseCode = "404", description = "Material no encontrado")
+        @ApiResponse(responseCode = "200", description = "Material encontrado",
+            content = @Content(mediaType = "application/json", examples = @ExampleObject(
+                name = "Ejemplo de material",
+                value = "{\"id\":1,\"nombre\":\"Cemento Portland\",\"unidadMedida\":\"saco 25kg\",\"precioReferencial\":6500.0,\"descripcion\":\"Cemento de uso general\",\"categoriaId\":1}"
+            ))),
+        @ApiResponse(responseCode = "404", description = "Material no encontrado",
+            content = @Content(mediaType = "application/json", examples = @ExampleObject(
+                value = "{\"error\":\"Material no encontrado con id: 99\"}"
+            )))
     })
     @GetMapping("/{id}")
     public ResponseEntity<MaterialDTO> obtenerPorId(
@@ -56,8 +65,15 @@ public class MaterialController {
 
     @Operation(summary = "Crear nuevo material")
     @ApiResponses({
-        @ApiResponse(responseCode = "201", description = "Material creado exitosamente"),
-        @ApiResponse(responseCode = "400", description = "Datos inválidos o nombre duplicado"),
+        @ApiResponse(responseCode = "201", description = "Material creado exitosamente",
+            content = @Content(mediaType = "application/json", examples = @ExampleObject(
+                name = "Material creado",
+                value = "{\"id\":5,\"nombre\":\"Cemento Portland\",\"unidadMedida\":\"saco 25kg\",\"precioReferencial\":6500.0,\"descripcion\":\"Cemento de uso general\",\"categoriaId\":1}"
+            ))),
+        @ApiResponse(responseCode = "400", description = "Datos inválidos o nombre duplicado",
+            content = @Content(mediaType = "application/json", examples = @ExampleObject(
+                value = "{\"error\":\"Ya existe un material con ese nombre\"}"
+            ))),
         @ApiResponse(responseCode = "404", description = "Categoría no encontrada")
     })
     @PostMapping

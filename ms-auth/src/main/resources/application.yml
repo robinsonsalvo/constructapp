@@ -3,6 +3,9 @@ spring:
     name: ms-auth
   profiles:
     active: ${SPRING_PROFILES_ACTIVE:dev}
+  cloud:
+    compatibility-verifier:
+      enabled: false
 
 server:
   port: ${SERVER_PORT:8091}
@@ -17,40 +20,27 @@ springdoc:
   api-docs:
     path: /v3/api-docs
 
-<<<<<<< HEAD
----
-=======
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:8761/eureka/
+      defaultZone: ${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE:http://localhost:8761/eureka/}
     register-with-eureka: true
     fetch-registry: true
   instance:
     prefer-ip-address: true
 
 ---
-
->>>>>>> 16dc53c (fix de eureka, pruebas unitarias y swagger auth)
 spring:
   config:
     activate:
       on-profile: dev
-<<<<<<< HEAD
-=======
-
->>>>>>> 16dc53c (fix de eureka, pruebas unitarias y swagger auth)
   datasource:
-    url: jdbc:mysql://localhost:3306/db_ms_auth?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://localhost:${DB_PORT:3306}/db_ms_auth?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
     username: root
     password: ""
-<<<<<<< HEAD
-=======
-
->>>>>>> 16dc53c (fix de eureka, pruebas unitarias y swagger auth)
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
     show-sql: true
     properties:
       hibernate:
@@ -59,35 +49,19 @@ spring:
     open-in-view: false
 
 ---
-<<<<<<< HEAD
-=======
-
->>>>>>> 16dc53c (fix de eureka, pruebas unitarias y swagger auth)
 spring:
   config:
     activate:
       on-profile: prod
-<<<<<<< HEAD
-=======
-
->>>>>>> 16dc53c (fix de eureka, pruebas unitarias y swagger auth)
   datasource:
     url: ${SPRING_DATASOURCE_URL}
     username: ${SPRING_DATASOURCE_USERNAME}
     password: ${SPRING_DATASOURCE_PASSWORD}
-<<<<<<< HEAD
-=======
-
->>>>>>> 16dc53c (fix de eureka, pruebas unitarias y swagger auth)
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
     show-sql: false
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
-<<<<<<< HEAD
     open-in-view: false
-=======
-    open-in-view: false
->>>>>>> 16dc53c (fix de eureka, pruebas unitarias y swagger auth)

@@ -1,5 +1,7 @@
 package com.constructapp.ms_proveedor_material.service;
 
+import com.constructapp.ms_proveedor_material.exception.ResourceNotFoundException;
+
 import com.constructapp.ms_proveedor_material.dto.PrecioProveedorDTO;
 import com.constructapp.ms_proveedor_material.model.PrecioProveedor;
 import com.constructapp.ms_proveedor_material.model.ProveedorMaterial;
@@ -28,7 +30,7 @@ public class PrecioProveedorService {
         log.info("Listando precios del proveedor id: {}", proveedorId);
 
         if (!proveedorRepository.existsById(proveedorId)) {
-            throw new RuntimeException(
+            throw new ResourceNotFoundException(
                     "Proveedor no encontrado con id: " + proveedorId);
         }
 
@@ -50,7 +52,7 @@ public class PrecioProveedorService {
 
         ProveedorMaterial proveedor = proveedorRepository
                 .findById(dto.getProveedorId())
-                .orElseThrow(() -> new RuntimeException(
+                .orElseThrow(() -> new ResourceNotFoundException(
                         "Proveedor no encontrado con id: " + dto.getProveedorId()));
 
         verificarMaterialExiste(dto.getMaterialId());
@@ -72,7 +74,7 @@ public class PrecioProveedorService {
         log.info("Actualizando precio con id: {}", id);
 
         PrecioProveedor precio = precioRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException(
+                .orElseThrow(() -> new ResourceNotFoundException(
                         "Precio no encontrado con id: " + id));
 
         precio.setPrecio(dto.getPrecio());
@@ -86,7 +88,7 @@ public class PrecioProveedorService {
     public void eliminar(Long id) {
         log.info("Eliminando precio con id: {}", id);
         if (!precioRepository.existsById(id)) {
-            throw new RuntimeException("Precio no encontrado con id: " + id);
+            throw new ResourceNotFoundException("Precio no encontrado con id: " + id);
         }
         precioRepository.deleteById(id);
         log.info("Precio eliminado con id: {}", id);
@@ -107,7 +109,7 @@ public class PrecioProveedorService {
 
         } catch (Exception e) {
             log.error("Material id: {} no encontrado en ms-catalogo", materialId);
-            throw new RuntimeException(
+            throw new ResourceNotFoundException(
                     "El material con id " + materialId +
                             " no existe en el catálogo");
         }

@@ -1,5 +1,7 @@
 package com.constructapp.ms_proveedor_servicio.service;
 
+import com.constructapp.ms_proveedor_servicio.exception.ResourceNotFoundException;
+
 
 
 import com.constructapp.ms_proveedor_servicio.dto.ProveedorServicioDTO;
@@ -50,7 +52,7 @@ public class ProveedorServicioService {
     public ProveedorServicioDTO obtenerPorId(Long id) {
         log.info("Buscando proveedor con id: {}", id);
         ProveedorServicio proveedor = proveedorServicioRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Proveedor no encontrado con id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Proveedor no encontrado con id: " + id));
         return convertirADTO(proveedor);
     }
 
@@ -68,7 +70,7 @@ public class ProveedorServicioService {
     public ProveedorServicioDTO actualizar(Long id, ProveedorServicioDTO dto) {
         log.info("Actualizando proveedor con id: {}", id);
         ProveedorServicio proveedor = proveedorServicioRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Proveedor no encontrado con id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Proveedor no encontrado con id: " + id));
         if (!proveedor.getRut().equals(dto.getRut()) && proveedorServicioRepository.existsByRut(dto.getRut())) {
             throw new RuntimeException("Ya existe un proveedor con el RUT: " + dto.getRut());
         }
@@ -89,7 +91,7 @@ public class ProveedorServicioService {
     public void eliminar(Long id) {
         log.info("Eliminando proveedor con id: {}", id);
         if (!proveedorServicioRepository.existsById(id)) {
-            throw new RuntimeException("Proveedor no encontrado con id: " + id);
+            throw new ResourceNotFoundException("Proveedor no encontrado con id: " + id);
         }
         proveedorServicioRepository.deleteById(id);
         log.info("Proveedor eliminado con id: {}", id);

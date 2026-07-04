@@ -1,5 +1,7 @@
 package com.constructapp.ms_comparacion_precios.service;
 
+import com.constructapp.ms_comparacion_precios.exception.ResourceNotFoundException;
+
 import com.constructapp.ms_comparacion_precios.dto.ComparacionPrecioDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -45,7 +47,7 @@ public class ComparacionPreciosService {
         log.info("Obteniendo precio mas barato para material id: {}", materialId);
         List<ComparacionPrecioDTO> precios = compararPorMaterial(materialId);
         if (precios.isEmpty()) {
-            throw new RuntimeException("No hay proveedores para el material id: " + materialId);
+            throw new ResourceNotFoundException("No hay proveedores para el material id: " + materialId);
         }
         return precios.get(0);
     }

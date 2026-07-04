@@ -1,11 +1,6 @@
 package com.constructapp.ms_cotizacion.config;
 
 import io.swagger.v3.oas.models.OpenAPI;
-<<<<<<< HEAD
-import io.swagger.v3.oas.models.info.Contact;
-import io.swagger.v3.oas.models.info.Info;
-import io.swagger.v3.oas.models.info.License;
-=======
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
@@ -13,7 +8,6 @@ import io.swagger.v3.oas.models.info.License;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 
->>>>>>> 16dc53c (fix de eureka, pruebas unitarias y swagger auth)
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -22,12 +16,6 @@ public class SwaggerConfig {
 
     @Bean
     public OpenAPI customOpenAPI() {
-<<<<<<< HEAD
-        return new OpenAPI()
-                .info(new Info()
-                        .title("MS Cotización API")
-                        .description("Gestión de cotizaciones y detalles de materiales y servicios")
-=======
 
         final String securitySchemeName = "bearerAuth";
 
@@ -35,16 +23,12 @@ public class SwaggerConfig {
 
                 .info(new Info()
                         .title("MS Cotizacion API")
-                        .description("Autenticación y autorización con JWT")
->>>>>>> 16dc53c (fix de eureka, pruebas unitarias y swagger auth)
+                        .description("Gestión de cotizaciones de proyectos de construcción")
                         .version("1.0.0")
                         .contact(new Contact()
                                 .name("ConstructApp Team")
                                 .email("constructapp@gmail.com"))
                         .license(new License()
-<<<<<<< HEAD
-                                .name("MIT License")));
-=======
                                 .name("MIT License")))
 
                 .addSecurityItem(
@@ -62,6 +46,5 @@ public class SwaggerConfig {
                                                 .bearerFormat("JWT")
                                 )
                 );
->>>>>>> 16dc53c (fix de eureka, pruebas unitarias y swagger auth)
     }
 }

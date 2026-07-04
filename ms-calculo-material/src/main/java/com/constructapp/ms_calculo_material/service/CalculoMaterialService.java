@@ -1,5 +1,7 @@
 package com.constructapp.ms_calculo_material.service;
 
+import com.constructapp.ms_calculo_material.exception.ResourceNotFoundException;
+
 import com.constructapp.ms_calculo_material.dto.CalculoMaterialDTO;
 import com.constructapp.ms_calculo_material.model.CalculoMaterial;
 import com.constructapp.ms_calculo_material.repository.CalculoMaterialRepository;
@@ -36,7 +38,7 @@ public class CalculoMaterialService {
     public CalculoMaterialDTO obtenerPorId(Long id) {
         log.info("Buscando calculo con id: {}", id);
         CalculoMaterial calculo = calculoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Calculo no encontrado con id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Calculo no encontrado con id: " + id));
         return convertirADTO(calculo);
     }
 
@@ -74,7 +76,7 @@ public class CalculoMaterialService {
     public CalculoMaterialDTO actualizar(Long id, CalculoMaterialDTO dto) {
         log.info("Actualizando calculo con id: {}", id);
         CalculoMaterial calculo = calculoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Calculo no encontrado con id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Calculo no encontrado con id: " + id));
 
         // Si cambia el material, verificar que no genere duplicado en el mismo proyecto
         if (!calculo.getMaterialId().equals(dto.getMaterialId())) {
@@ -108,7 +110,7 @@ public class CalculoMaterialService {
     public void eliminar(Long id) {
         log.info("Eliminando calculo con id: {}", id);
         if (!calculoRepository.existsById(id)) {
-            throw new RuntimeException("Calculo no encontrado con id: " + id);
+            throw new ResourceNotFoundException("Calculo no encontrado con id: " + id);
         }
         calculoRepository.deleteById(id);
         log.info("Calculo eliminado con id: {}", id);
@@ -124,7 +126,7 @@ public class CalculoMaterialService {
                     .block();
         } catch (Exception e) {
             log.error("Material id: {} no encontrado en ms-catalogo", materialId);
-            throw new RuntimeException("El material con id " + materialId + " no existe en el catalogo");
+            throw new ResourceNotFoundException("El material con id " + materialId + " no existe en el catalogo");
         }
     }
 

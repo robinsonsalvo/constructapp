@@ -1,5 +1,7 @@
 package com.constructapp.ms_proveedor_material.service;
 
+import com.constructapp.ms_proveedor_material.exception.ResourceNotFoundException;
+
 import com.constructapp.ms_proveedor_material.dto.ProveedorMaterialDTO;
 import com.constructapp.ms_proveedor_material.model.ProveedorMaterial;
 import com.constructapp.ms_proveedor_material.repository.ProveedorMaterialRepository;
@@ -26,7 +28,7 @@ public class ProveedorMaterialService {
     public ProveedorMaterialDTO obtenerPorId(Long id) {
         log.info("Buscando proveedor de material con id: {}", id);
         ProveedorMaterial proveedor = proveedorRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException(
+                .orElseThrow(() -> new ResourceNotFoundException(
                         "Proveedor no encontrado con id: " + id));
         return convertirADTO(proveedor);
     }
@@ -54,7 +56,7 @@ public class ProveedorMaterialService {
         log.info("Actualizando proveedor de material con id: {}", id);
 
         ProveedorMaterial proveedor = proveedorRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException(
+                .orElseThrow(() -> new ResourceNotFoundException(
                         "Proveedor no encontrado con id: " + id));
 
         // Validar unicidad de email solo si cambió
@@ -87,7 +89,7 @@ public class ProveedorMaterialService {
         log.info("Eliminando proveedor de material con id: {}", id);
 
         if (!proveedorRepository.existsById(id)) {
-            throw new RuntimeException(
+            throw new ResourceNotFoundException(
                     "Proveedor no encontrado con id: " + id);
         }
         proveedorRepository.deleteById(id);

@@ -7,6 +7,9 @@ spring:
 server:
   port: ${SERVER_PORT:8085}
 
+jwt:
+  secret: ${JWT_SECRET:constructapp-secret-key-2025-muy-larga-para-seguridad}
+
 springdoc:
   swagger-ui:
     path: /swagger-ui.html
@@ -19,12 +22,12 @@ spring:
     activate:
       on-profile: dev
   datasource:
-    url: jdbc:mysql://localhost:3306/db_ms_resena?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://localhost:${DB_PORT:3306}/db_ms_resena?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
     username: root
     password: ""
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
     show-sql: true
     properties:
       hibernate:
@@ -43,7 +46,7 @@ spring:
     password: ${SPRING_DATASOURCE_PASSWORD}
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
     show-sql: false
     properties:
       hibernate:

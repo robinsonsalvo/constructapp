@@ -1,5 +1,7 @@
 package com.constructapp.ms_proyecto.service;
 
+import com.constructapp.ms_proyecto.exception.ResourceNotFoundException;
+
 import com.constructapp.ms_proyecto.dto.ProyectoDTO;
 import com.constructapp.ms_proyecto.model.EstadoProyecto;
 import com.constructapp.ms_proyecto.model.Proyecto;
@@ -43,7 +45,7 @@ public class ProyectoService {
     public ProyectoDTO obtenerPorId(Long id) {
         log.info("Buscando proyecto con id: {}", id);
         Proyecto proyecto = proyectoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Proyecto no encontrado con id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Proyecto no encontrado con id: " + id));
         return convertirADTO(proyecto);
     }
 
@@ -68,7 +70,7 @@ public class ProyectoService {
     public ProyectoDTO actualizar(Long id, ProyectoDTO dto) {
         log.info("Actualizando proyecto con id: {}", id);
         Proyecto proyecto = proyectoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Proyecto no encontrado con id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Proyecto no encontrado con id: " + id));
 
         if (!proyecto.getClienteId().equals(dto.getClienteId())) {
             validarClienteExiste(dto.getClienteId());
@@ -129,7 +131,7 @@ public class ProyectoService {
     public void eliminar(Long id) {
         log.info("Eliminando proyecto con id: {}", id);
         Proyecto proyecto = proyectoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Proyecto no encontrado con id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Proyecto no encontrado con id: " + id));
 
         if (proyecto.getEstado() == EstadoProyecto.EN_EJECUCION
                 || proyecto.getEstado() == EstadoProyecto.TERMINADO) {
@@ -152,7 +154,7 @@ public class ProyectoService {
                 .onErrorReturn(false)
                 .block();
         if (Boolean.FALSE.equals(existe)) {
-            throw new RuntimeException("No existe un cliente con id: " + clienteId);
+            throw new ResourceNotFoundException("No existe un cliente con id: " + clienteId);
         }
     }
 

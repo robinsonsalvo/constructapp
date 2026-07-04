@@ -1,5 +1,7 @@
 package com.constructapp.ms_orden_trabajo.service;
 
+import com.constructapp.ms_orden_trabajo.exception.ResourceNotFoundException;
+
 import com.constructapp.ms_orden_trabajo.dto.OrdenTrabajoDTO;
 import com.constructapp.ms_orden_trabajo.model.EstadoOrden;
 import com.constructapp.ms_orden_trabajo.model.OrdenTrabajo;
@@ -45,7 +47,7 @@ public class OrdenTrabajoService {
     public OrdenTrabajoDTO obtenerPorId(Long id) {
         log.info("Buscando orden de trabajo con id: {}", id);
         OrdenTrabajo orden = ordenRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Orden no encontrada con id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Orden no encontrada con id: " + id));
         return convertirADTO(orden);
     }
 
@@ -81,7 +83,7 @@ public class OrdenTrabajoService {
     public OrdenTrabajoDTO cambiarEstado(Long id, EstadoOrden nuevoEstado) {
         log.info("Cambiando estado de orden id: {} a {}", id, nuevoEstado);
         OrdenTrabajo orden = ordenRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Orden no encontrada con id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Orden no encontrada con id: " + id));
 
         EstadoOrden estadoActual = orden.getEstado();
         validarTransicionEstado(estadoActual, nuevoEstado);
@@ -125,7 +127,7 @@ public class OrdenTrabajoService {
     public void eliminar(Long id) {
         log.info("Eliminando orden de trabajo con id: {}", id);
         OrdenTrabajo orden = ordenRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Orden no encontrada con id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Orden no encontrada con id: " + id));
 
         if (orden.getEstado() == EstadoOrden.EN_CURSO || orden.getEstado() == EstadoOrden.COMPLETADA) {
             throw new RuntimeException(
@@ -147,7 +149,7 @@ public class OrdenTrabajoService {
                     .block();
         } catch (Exception e) {
             log.error("Cotizacion id: {} no encontrada", cotizacionId);
-            throw new RuntimeException("La cotizacion con id " + cotizacionId + " no existe");
+            throw new ResourceNotFoundException("La cotizacion con id " + cotizacionId + " no existe");
         }
     }
 

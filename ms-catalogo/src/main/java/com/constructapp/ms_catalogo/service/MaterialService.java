@@ -1,5 +1,7 @@
 package com.constructapp.ms_catalogo.service;
 
+import com.constructapp.ms_catalogo.exception.ResourceNotFoundException;
+
 import com.constructapp.ms_catalogo.dto.MaterialDTO;
 import com.constructapp.ms_catalogo.model.Categoria;
 import com.constructapp.ms_catalogo.model.Material;
@@ -36,7 +38,7 @@ public class MaterialService {
     public MaterialDTO obtenerPorId(Long id) {
         log.info("Buscando material con id: {}", id);
         Material material = materialRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Material no encontrado con id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Material no encontrado con id: " + id));
         return convertirADTO(material);
     }
 
@@ -46,7 +48,7 @@ public class MaterialService {
             throw new RuntimeException("Ya existe un material con el nombre: " + dto.getNombre());
         }
         Categoria categoria = categoriaRepository.findById(dto.getCategoriaId())
-                .orElseThrow(() -> new RuntimeException("Categoria no encontrada con id: " + dto.getCategoriaId()));
+                .orElseThrow(() -> new ResourceNotFoundException("Categoria no encontrada con id: " + dto.getCategoriaId()));
         Material material = convertirAEntidad(dto, categoria);
         Material guardado = materialRepository.save(material);
         log.info("Material creado con id: {}", guardado.getId());
@@ -56,9 +58,9 @@ public class MaterialService {
     public MaterialDTO actualizar(Long id, MaterialDTO dto) {
         log.info("Actualizando material con id: {}", id);
         Material material = materialRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Material no encontrado con id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Material no encontrado con id: " + id));
         Categoria categoria = categoriaRepository.findById(dto.getCategoriaId())
-                .orElseThrow(() -> new RuntimeException("Categoria no encontrada con id: " + dto.getCategoriaId()));
+                .orElseThrow(() -> new ResourceNotFoundException("Categoria no encontrada con id: " + dto.getCategoriaId()));
         material.setNombre(dto.getNombre());
         material.setUnidadMedida(dto.getUnidadMedida());
         material.setPrecioReferencial(dto.getPrecioReferencial());
@@ -72,7 +74,7 @@ public class MaterialService {
     public void eliminar(Long id) {
         log.info("Eliminando material con id: {}", id);
         if (!materialRepository.existsById(id)) {
-            throw new RuntimeException("Material no encontrado con id: " + id);
+            throw new ResourceNotFoundException("Material no encontrado con id: " + id);
         }
         materialRepository.deleteById(id);
         log.info("Material eliminado con id: {}", id);

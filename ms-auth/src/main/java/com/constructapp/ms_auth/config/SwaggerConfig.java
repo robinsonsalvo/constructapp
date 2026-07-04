@@ -1,11 +1,6 @@
 package com.constructapp.ms_auth.config;
 
 import io.swagger.v3.oas.models.OpenAPI;
-<<<<<<< HEAD
-import io.swagger.v3.oas.models.info.Contact;
-import io.swagger.v3.oas.models.info.Info;
-import io.swagger.v3.oas.models.info.License;
-=======
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
@@ -13,7 +8,6 @@ import io.swagger.v3.oas.models.info.License;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 
->>>>>>> 16dc53c (fix de eureka, pruebas unitarias y swagger auth)
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -22,15 +16,11 @@ public class SwaggerConfig {
 
     @Bean
     public OpenAPI customOpenAPI() {
-<<<<<<< HEAD
-        return new OpenAPI()
-=======
 
         final String securitySchemeName = "bearerAuth";
 
         return new OpenAPI()
 
->>>>>>> 16dc53c (fix de eureka, pruebas unitarias y swagger auth)
                 .info(new Info()
                         .title("MS Auth API")
                         .description("Autenticación y autorización con JWT")
@@ -39,11 +29,6 @@ public class SwaggerConfig {
                                 .name("ConstructApp Team")
                                 .email("constructapp@gmail.com"))
                         .license(new License()
-<<<<<<< HEAD
-                                .name("MIT License")));
-    }
-}
-=======
                                 .name("MIT License")))
 
                 .addSecurityItem(
@@ -63,4 +48,3 @@ public class SwaggerConfig {
                 );
     }
 }
->>>>>>> 16dc53c (fix de eureka, pruebas unitarias y swagger auth)

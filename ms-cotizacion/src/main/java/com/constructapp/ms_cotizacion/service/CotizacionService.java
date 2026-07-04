@@ -1,5 +1,7 @@
 package com.constructapp.ms_cotizacion.service;
 
+import com.constructapp.ms_cotizacion.exception.ResourceNotFoundException;
+
 import com.constructapp.ms_cotizacion.dto.CotizacionDTO;
 import com.constructapp.ms_cotizacion.dto.DetalleCotizacionDTO;
 import com.constructapp.ms_cotizacion.model.*;
@@ -62,7 +64,7 @@ public class CotizacionService {
     public CotizacionDTO obtenerPorId(Long id) {
         log.info("Buscando cotizacion con id: {}", id);
         Cotizacion cotizacion = cotizacionRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Cotizacion no encontrada con id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Cotizacion no encontrada con id: " + id));
         return convertirADTO(cotizacion);
     }
 
@@ -122,7 +124,7 @@ public class CotizacionService {
     public CotizacionDTO cambiarEstado(Long id, EstadoCotizacion nuevoEstado) {
         log.info("Cambiando estado de cotizacion id: {} a {}", id, nuevoEstado);
         Cotizacion cotizacion = cotizacionRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Cotizacion no encontrada con id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Cotizacion no encontrada con id: " + id));
 
         EstadoCotizacion estadoActual = cotizacion.getEstado();
         validarTransicionEstado(estadoActual, nuevoEstado);
@@ -161,7 +163,7 @@ public class CotizacionService {
     public void eliminar(Long id) {
         log.info("Eliminando cotizacion con id: {}", id);
         Cotizacion cotizacion = cotizacionRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Cotizacion no encontrada con id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Cotizacion no encontrada con id: " + id));
 
         if (cotizacion.getEstado() == EstadoCotizacion.APROBADA) {
             throw new RuntimeException(
@@ -182,7 +184,7 @@ public class CotizacionService {
                     .block();
         } catch (Exception e) {
             log.error("Cliente id: {} no encontrado", clienteId);
-            throw new RuntimeException("El cliente con id " + clienteId + " no existe");
+            throw new ResourceNotFoundException("El cliente con id " + clienteId + " no existe");
         }
     }
 

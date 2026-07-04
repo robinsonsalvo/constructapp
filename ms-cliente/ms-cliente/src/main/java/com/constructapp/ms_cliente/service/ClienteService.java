@@ -1,5 +1,7 @@
 package com.constructapp.ms_cliente.service;
 
+import com.constructapp.ms_cliente.exception.ResourceNotFoundException;
+
 
 import com.constructapp.ms_cliente.dto.ClienteDTO;
 import com.constructapp.ms_cliente.model.Cliente;
@@ -36,7 +38,7 @@ public class ClienteService {
     public ClienteDTO obtenerPorId(Long id) {
         log.info("Buscando cliente con id: {}", id);
         Cliente cliente = clienteRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Cliente no encontrado con id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Cliente no encontrado con id: " + id));
         return convertirADTO(cliente);
     }
 
@@ -57,7 +59,7 @@ public class ClienteService {
     public ClienteDTO actualizar(Long id, ClienteDTO dto) {
         log.info("Actualizando cliente con id: {}", id);
         Cliente cliente = clienteRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Cliente no encontrado con id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Cliente no encontrado con id: " + id));
         if (!cliente.getEmail().equals(dto.getEmail()) && clienteRepository.existsByEmail(dto.getEmail())) {
             throw new RuntimeException("Ya existe un cliente con el email: " + dto.getEmail());
         }
@@ -81,7 +83,7 @@ public class ClienteService {
     public void eliminar(Long id) {
         log.info("Eliminando cliente con id: {}", id);
         if (!clienteRepository.existsById(id)) {
-            throw new RuntimeException("Cliente no encontrado con id: " + id);
+            throw new ResourceNotFoundException("Cliente no encontrado con id: " + id);
         }
         clienteRepository.deleteById(id);
         log.info("Cliente eliminado con id: {}", id);

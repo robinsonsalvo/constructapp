@@ -3,9 +3,24 @@ spring:
     name: ms-proveedor-material
   profiles:
     active: ${SPRING_PROFILES_ACTIVE:dev}
+  cloud:
+    compatibility-verifier:
+      enabled: false
 
 server:
   port: ${SERVER_PORT:8083}
+
+jwt:
+  secret: ${JWT_SECRET:constructapp-secret-key-2025-muy-larga-para-seguridad}
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE:http://localhost:8761/eureka/}
+    register-with-eureka: true
+    fetch-registry: true
+  instance:
+    prefer-ip-address: true
 
 springdoc:
   swagger-ui:
@@ -19,18 +34,19 @@ spring:
     activate:
       on-profile: dev
   datasource:
-    url: jdbc:mysql://localhost:3306/db_ms_proveedor_material?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://localhost:${DB_PORT:3306}/db_ms_proveedor_material?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
     username: root
     password: ""
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
     show-sql: true
     properties:
       hibernate:
         format_sql: true
         dialect: org.hibernate.dialect.MySQLDialect
     open-in-view: false
+MS_CATALOGO_URL: http://localhost:8081
 
 ---
 spring:
@@ -43,9 +59,11 @@ spring:
     password: ${SPRING_DATASOURCE_PASSWORD}
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
     show-sql: false
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
     open-in-view: false
+
+MS_CATALOGO_URL: http://ms-catalogo:8081

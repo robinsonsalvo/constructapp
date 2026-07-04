@@ -1,5 +1,6 @@
 package com.constructapp.ms_auth.service;
 
+import com.constructapp.ms_auth.exception.InvalidCredentialsException;
 import com.constructapp.ms_auth.dto.LoginDTO;
 import com.constructapp.ms_auth.dto.RegisterDTO;
 import com.constructapp.ms_auth.dto.TokenResponseDTO;
@@ -50,12 +51,12 @@ public class AuthService {
         log.info("Login para usuario: {}", dto.getUsername());
 
         Usuario usuario = usuarioRepository.findByUsername(dto.getUsername())
-                .orElseThrow(() -> new RuntimeException(
+                .orElseThrow(() -> new InvalidCredentialsException(
                         "Credenciales inválidas"));
 
         if (!passwordEncoder.matches(dto.getPassword(), usuario.getPassword())) {
             log.error("Contraseña incorrecta para usuario: {}", dto.getUsername());
-            throw new RuntimeException("Credenciales inválidas");
+            throw new InvalidCredentialsException("Credenciales inválidas");
         }
 
         String token = jwtService.generarToken(usuario);

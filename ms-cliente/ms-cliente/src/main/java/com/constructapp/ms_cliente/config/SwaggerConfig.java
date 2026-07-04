@@ -1,11 +1,6 @@
 package com.constructapp.ms_cliente.config;
 
 import io.swagger.v3.oas.models.OpenAPI;
-<<<<<<< HEAD
-import io.swagger.v3.oas.models.info.Contact;
-import io.swagger.v3.oas.models.info.Info;
-import io.swagger.v3.oas.models.info.License;
-=======
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
@@ -13,7 +8,6 @@ import io.swagger.v3.oas.models.info.License;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 
->>>>>>> 16dc53c (fix de eureka, pruebas unitarias y swagger auth)
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -22,20 +16,6 @@ public class SwaggerConfig {
 
     @Bean
     public OpenAPI customOpenAPI() {
-<<<<<<< HEAD
-        return new OpenAPI()
-                .info(new Info()
-                        .title("MS Cliente API")
-                        .description("Gestión de clientes particulares y empresas")
-                        .version("1.0.0")
-                        .contact(new Contact()
-                                .name("ConstructApp Team")
-                                .email("constructapp@gmail.com"))
-                        .license(new License()
-                                .name("MIT License")));
-    }
-}
-=======
 
         final String securitySchemeName = "bearerAuth";
 
@@ -68,4 +48,3 @@ public class SwaggerConfig {
             );
     }
 }
->>>>>>> 16dc53c (fix de eureka, pruebas unitarias y swagger auth)
